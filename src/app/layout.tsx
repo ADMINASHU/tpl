@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "TPL",
-  description: "TPL Management System",
+  description: "Techser Premier League",
 };
 
 export default function RootLayout({
