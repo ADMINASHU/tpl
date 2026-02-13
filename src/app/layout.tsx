@@ -15,6 +15,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "TPL",
   description: "Techser Premier League",
+  manifest: "/manifest.json",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
 };
 
 export default function RootLayout({
@@ -24,29 +26,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.onerror = function(msg, url, line, col, error) {
-                var div = document.createElement('div');
-                div.style.position = 'fixed';
-                div.style.top = '0';
-                div.style.left = '0';
-                div.style.width = '100%';
-                div.style.backgroundColor = 'red';
-                div.style.color = 'white';
-                div.style.padding = '10px';
-                div.style.zIndex = '99999';
-                div.style.fontSize = '20px';
-                div.style.whiteSpace = 'pre-wrap';
-                div.textContent = 'GLOBAL ERROR: ' + msg + '\\nAt: ' + url + ':' + line + ':' + col;
-                document.body.appendChild(div);
-              };
-            `,
-          }}
-        />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
