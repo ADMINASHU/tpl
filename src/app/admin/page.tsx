@@ -2,8 +2,10 @@
 import { useState, useEffect } from 'react';
 import { db } from '../../lib/firebase';
 import { ref, update, onValue } from "firebase/database";
+import { useRouter } from 'next/navigation';
 
 export default function AdminPage() {
+    const router = useRouter();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [pinInput, setPinInput] = useState('');
 
@@ -12,6 +14,7 @@ export default function AdminPage() {
     const [wickets, setWickets] = useState('');
     const [overs, setOvers] = useState('');
     const [totalOvers, setTotalOvers] = useState('');
+    const [theme, setTheme] = useState('dark');
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
 
@@ -28,6 +31,7 @@ export default function AdminPage() {
                 setWickets(data.wickets || '0');
                 setOvers(data.overs || '0.0');
                 setTotalOvers(data.totalOvers || '');
+                setTheme(data.theme || 'dark');
             }
         });
 
@@ -56,6 +60,7 @@ export default function AdminPage() {
                 wickets: wickets,
                 overs: overs,
                 totalOvers: totalOvers,
+                theme: theme,
                 timestamp: Date.now()
             });
             setMessage('Score updated successfully!');
@@ -107,6 +112,13 @@ export default function AdminPage() {
                             Enter
                         </button>
                     </form>
+                    
+                    <button
+                        onClick={() => router.push('/')}
+                        className="mt-4 w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+                    >
+                        Back to Home
+                    </button>
                 </div>
             </div>
         );
@@ -117,7 +129,17 @@ export default function AdminPage() {
             <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl font-bold text-gray-800">Score Control</h1>
-                    <button onClick={() => setIsAuthenticated(false)} className="text-sm text-red-500 hover:underline">Logout</button>
+                    <div className="flex items-center space-x-4">
+                        {/* Theme Toggle */}
+                        <button
+                            type="button"
+                            onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
+                            className={`px-3 py-1 rounded text-sm font-bold ${theme === 'dark' ? 'bg-black text-white' : 'bg-gray-200 text-black border border-gray-400'}`}
+                        >
+                            {theme === 'dark' ? '🌙 Dark' : '☀️ Light'}
+                        </button>
+                        <button onClick={() => setIsAuthenticated(false)} className="text-sm text-red-500 hover:underline">Logout</button>
+                    </div>
                 </div>
 
                 <form onSubmit={handleUpdate} className="space-y-4">

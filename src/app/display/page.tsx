@@ -4,7 +4,7 @@ import { db } from '../../lib/firebase';
 import { ref, onValue } from "firebase/database";
 
 export default function DisplayPage() {
-    const [score, setScore] = useState({ runs: '0', wickets: '0', overs: '0.0', target: '0', totalOvers: '0' });
+    const [score, setScore] = useState({ runs: '0', wickets: '0', overs: '0.0', target: '0', totalOvers: '0', theme: 'dark' });
 
     const [celebration, setCelebration] = useState<{ type: string, timestamp: number } | null>(null);
     const [showOverlay, setShowOverlay] = useState(false);
@@ -20,7 +20,8 @@ export default function DisplayPage() {
                     wickets: data.wickets || '0',
                     overs: data.overs || '0.0',
                     target: data.target || '0',
-                    totalOvers: data.totalOvers || '0'
+                    totalOvers: data.totalOvers || '0',
+                    theme: data.theme || 'dark'
                 });
             }
         });
@@ -52,23 +53,35 @@ export default function DisplayPage() {
         };
     }, []);
 
+    const bgColor = score.theme === 'light' ? 'bg-white' : 'bg-black';
+    const textColor = score.theme === 'light' ? 'text-black' : 'text-white';
+    const subTextColor = score.theme === 'light' ? 'text-gray-600' : 'text-gray-300';
+    const dividerColor = score.theme === 'light' ? 'bg-gray-400' : 'bg-gray-500';
+
     return (
-        <div className="h-screen w-screen bg-black text-white flex flex-col items-center justify-center overflow-hidden relative">
+        <div className={`h-screen w-screen ${bgColor} ${textColor} flex flex-col items-center justify-center overflow-hidden relative transition-colors duration-500`}>
             {/* Runs / Wickets in massive text */}
             <div className="flex items-center justify-center font-bold" style={{ fontSize: '32vw', lineHeight: 1 }}>
                 <span>{score.runs}</span>
 
                 {/* Vertical Line Separator */}
-                <div className="mx-8 bg-gray-500 rounded" style={{ width: '1vw', height: '20vw' }}></div>
+                <div className={`mx-8 ${dividerColor} rounded`} style={{ width: '1vw', height: '20vw' }}></div>
 
                 <span>{score.wickets}</span>
             </div>
 
             {/* Overs at bottom right */}
             {/* Overs at bottom right */}
-            <div className="absolute bottom-6 right-8 font-mono text-gray-300 font-bold" style={{ fontSize: '2vw' }}>
+            <div className={`absolute bottom-6 right-8 font-mono ${subTextColor} font-bold`} style={{ fontSize: '2vw' }}>
                 OVERS: {score.overs}
             </div>
+
+            {/* Target Display (if exists) */}
+            {parseInt(score.target) > 0 && (
+                 <div className={`absolute bottom-6 left-8 font-mono ${subTextColor} font-bold`} style={{ fontSize: '2vw' }}>
+                    TARGET: {score.target}
+                </div>
+            )}
 
             {/* Celebration Overlay */}
             {showOverlay && celebration && (
