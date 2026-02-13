@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Browser Debug</title>
+    <style>
+      body {
+        background: black;
+        color: white;
+        font-family: monospace;
+        padding: 20px;
+        font-size: 16px;
+      }
+      .success {
+        color: #4ade80;
+      }
+      .error {
+        color: #f87171;
+      }
+      .box {
+        border: 1px solid #333;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Vanilla JS Debugger</h1>
+
+    <div class="box">
+      <h3>User Agent</h3>
+      <div id="ua">Loading...</div>
+    </div>
+
+    <div class="box">
+      <h3>Feature Check</h3>
+      <ul id="features"></ul>
+    </div>
+
+    <script>
+      // 1. Output User Agent
+      document.getElementById("ua").textContent = navigator.userAgent;
+
+      // 2. Feature Detection
+      const features = document.getElementById("features");
+      function check(name, test) {
+        const li = document.createElement("li");
+        try {
+          const result = test();
+          li.textContent = name + ": " + (result ? "OK" : "FAIL");
+          li.className = result ? "success" : "error";
+        } catch (e) {
+          li.textContent = name + ": ERROR (" + e.message + ")";
+          li.className = "error";
+        }
+        features.appendChild(li);
+      }
+
+      check("ES6 Arrow Functions", function () {
+        return eval("() => true")();
+      });
+      check("ES6 Const/Let", function () {
+        return eval("const a = 1; let b = 2; return a + b === 3;");
+      });
+      check("Async/Await", function () {
+        return eval("(async function() {})") instanceof Function;
+      });
+      check("Optional Chaining (?.)", function () {
+        return eval("const o = {}; return o?.a === undefined;");
+      });
+      check("Nullish Coalescing (??)", function () {
+        return eval('return (null ?? "default") === "default";');
+      });
+      check("BigInt", function () {
+        return typeof BigInt !== "undefined";
+      });
+      check("Object.fromEntries", function () {
+        return typeof Object.fromEntries === "function";
+      });
+    </script>
+  </body>
+</html>
